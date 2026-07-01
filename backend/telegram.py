@@ -7,13 +7,14 @@ load_dotenv()
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-def send_telegram_notification(name: str, phone: str, event_type: str, date: str, comment: str):
+def send_telegram_notification(name: str, phone: str, event_type: str, date: str, comment: str, source: str = "Сайт"):
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         print("Telegram bot token or chat ID not set. Skipping notification.")
         return False
         
     text = (
-        f"🔥 *Новая заявка с сайта ShowFusion!* 🔥\n\n"
+        f"🔥 *Новая заявка!* 🔥\n\n"
+        f"🌐 *Источник:* {source}\n"
         f"👤 *Имя:* {name}\n"
         f"📱 *Телефон:* {phone}\n"
         f"🎭 *Тип:* {event_type}\n"

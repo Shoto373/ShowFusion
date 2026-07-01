@@ -130,5 +130,6 @@ async def process_comment(message: Message, state: FSMContext):
         phone=data['phone'],
         event_type=data['service'],
         date=data['date'],
-        comment=data['comment']
+        comment=data['comment'],
+        source="Telegram-бот"
     ))

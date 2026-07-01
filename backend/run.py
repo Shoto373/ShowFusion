@@ -11,8 +11,9 @@ def main():
     print("Starting Telegram Bot...")
     # Add PYTHONPATH so absolute imports in bot work
     env = os.environ.copy()
-    env["PYTHONPATH"] = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    bot_process = subprocess.Popen([sys.executable, "tg_bot/bot.py"], env=env)
+    cwd = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    env["PYTHONPATH"] = cwd
+    bot_process = subprocess.Popen([sys.executable, "backend/tg_bot/bot.py"], env=env, cwd=cwd)
     
     try:
         while True:
