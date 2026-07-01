@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.sqlite3
+backend/.env
+showfusion.db
+backend/showfusion.db
+uploads/
+.idea/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
