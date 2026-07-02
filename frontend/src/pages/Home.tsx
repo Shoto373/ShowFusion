@@ -84,18 +84,19 @@ export const Home = () => {
             <div className="w-24 h-1 bg-gradient-to-r from-brand-orange to-brand-gold mx-auto rounded-full" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {services.map((service, index) => (
               <motion.div
                 key={service.key}
+                id={service.key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="card group cursor-pointer"
+                className="card group cursor-pointer w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.333rem)] flex flex-col scroll-mt-32"
               >
-                <Link to="/services">
-                  <div className="h-56 bg-gray-800 relative overflow-hidden">
+                <Link to={`/services#${service.key}`} className="flex-grow flex flex-col">
+                  <div className="h-56 bg-gray-800 relative overflow-hidden flex-shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark-card via-brand-dark-card/50 to-transparent z-10" />
                     <img 
                       src={service.image.startsWith('/media') ? service.image : `http://localhost:8000${service.image}`} 
@@ -109,12 +110,12 @@ export const Home = () => {
                       {IconMap[service.icon_name] || <Star size={24} className="text-brand-gold" />}
                     </div>
                   </div>
-                  <div className="p-6 relative z-20 -mt-6">
+                  <div className="p-6 relative z-20 -mt-6 flex flex-col flex-grow">
                     <h3 className="text-xl font-bold mb-2 group-hover:text-brand-gold transition-colors">{service.title}</h3>
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-grow">
                       {service.description}
                     </p>
-                    <div className="text-brand-neon font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                    <div className="text-brand-neon font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
                       Подробнее <span>&rarr;</span>
                     </div>
                   </div>

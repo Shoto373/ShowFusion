@@ -18,6 +18,7 @@ export const Admin = () => {
   const [newReviewAuthor, setNewReviewAuthor] = useState('');
   const [newReviewText, setNewReviewText] = useState('');
   const [newReviewRating, setNewReviewRating] = useState(5);
+  const [newReviewDate, setNewReviewDate] = useState('');
 
   // Services state
   const [services, setServices] = useState<any[]>([]);
@@ -72,10 +73,15 @@ export const Admin = () => {
 
   const handleAddReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createReview(newReviewAuthor, newReviewText, newReviewRating);
+    let isoDate = undefined;
+    if (newReviewDate) {
+      isoDate = new Date(newReviewDate).toISOString();
+    }
+    await createReview(newReviewAuthor, newReviewText, newReviewRating, isoDate);
     setNewReviewAuthor('');
     setNewReviewText('');
     setNewReviewRating(5);
+    setNewReviewDate('');
     fetchData();
   };
 
@@ -189,7 +195,7 @@ export const Admin = () => {
                   </div>
                   <div className="flex-1 min-w-[200px]">
                     <label className="block text-gray-400 mb-2">Фото {editingServiceId && '(Оставьте пустым, чтобы не менять)'}</label>
-                    <input type="file" accept="image/*" ref={serviceFileInputRef} onChange={e => setNewServiceImage(e.target.files?.[0] || null)} className="w-full text-sm text-gray-400" />
+                    <input type="file" accept="image/*" ref={serviceFileInputRef} onChange={e => setNewServiceImage(e.target.files?.[0] || null)} className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-brand-neon file:text-brand-dark hover:file:bg-brand-neon/80 cursor-pointer transition-all" />
                   </div>
                 </div>
                 <div>
@@ -251,7 +257,7 @@ export const Admin = () => {
                 </div>
                 <div className="flex-1 min-w-[200px]">
                   <label className="block text-gray-400 mb-2">Фото</label>
-                  <input type="file" accept="image/*" ref={fileInputRef} onChange={e => setNewImage(e.target.files?.[0] || null)} required className="w-full text-sm text-gray-400" />
+                  <input type="file" accept="image/*" ref={fileInputRef} onChange={e => setNewImage(e.target.files?.[0] || null)} required className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-brand-neon file:text-brand-dark hover:file:bg-brand-neon/80 cursor-pointer transition-all" />
                 </div>
                 <button type="submit" className="bg-brand-neon text-brand-dark px-6 py-2 rounded-lg font-bold">Добавить</button>
               </form>
@@ -260,7 +266,14 @@ export const Admin = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {portfolioItems.map(item => (
                 <div key={item.id} className="bg-brand-dark-card rounded-xl overflow-hidden border border-gray-700">
-                  <img src={`http://localhost:8000${item.image}`} alt={item.title} className="w-full h-48 object-cover" />
+                  <img 
+                    src={item.image.startsWith('/media') ? item.image : (item.image.startsWith('http') ? item.image : `http://localhost:8000${item.image}`)} 
+                    alt={item.title} 
+                    className="w-full h-48 object-cover" 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1549444498-8ec1f4a9b2b2?auto=format&fit=crop&q=80';
+                    }}
+                  />
                   <div className="p-4 flex justify-between items-center">
                     <div>
                       <h3 className="font-bold">{item.title}</h3>
@@ -283,6 +296,10 @@ export const Admin = () => {
                   <div className="flex-1 min-w-[200px]">
                     <label className="block text-gray-400 mb-2">Имя автора</label>
                     <input type="text" value={newReviewAuthor} onChange={e => setNewReviewAuthor(e.target.value)} required className="w-full bg-brand-dark border border-gray-700 rounded-lg px-4 py-2" />
+                  </div>
+                  <div className="flex-1 min-w-[150px]">
+                    <label className="block text-gray-400 mb-2">Дата (опционально)</label>
+                    <input type="date" value={newReviewDate} onChange={e => setNewReviewDate(e.target.value)} className="w-full bg-brand-dark border border-gray-700 rounded-lg px-4 py-2" />
                   </div>
                   <div className="w-32">
                     <label className="block text-gray-400 mb-2">Оценка</label>

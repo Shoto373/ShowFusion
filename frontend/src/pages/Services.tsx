@@ -46,7 +46,7 @@ export const Services = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className={`flex flex-col md:flex-row gap-12 items-center ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
+              className={`flex flex-col md:flex-row gap-12 items-center scroll-mt-32 ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
             >
               {/* Image */}
               <div className="w-full md:w-1/2">

@@ -24,7 +24,7 @@ app.add_middleware(
 )
 
 # Static files for uploads
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads")
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
@@ -74,7 +74,7 @@ def read_reviews(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 
 @app.post("/api/reviews", response_model=schemas.Review)
 def create_review(review: schemas.ReviewCreate, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
-    db_review = models.Review(**review.model_dump())
+    db_review = models.Review(**review.model_dump(exclude_none=True))
     db.add(db_review)
     db.commit()
     db.refresh(db_review)

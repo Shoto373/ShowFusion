@@ -20,6 +20,7 @@ class ReviewCreate(BaseModel):
     author: str
     text: str
     rating: int
+    created_at: Optional[datetime] = None
 
 class Review(ReviewCreate):
     id: int

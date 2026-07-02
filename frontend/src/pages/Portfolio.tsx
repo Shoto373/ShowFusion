@@ -79,7 +79,7 @@ export const Portfolio = () => {
                 className="relative group rounded-xl overflow-hidden aspect-[4/3] cursor-pointer bg-brand-dark-card"
               >
                 <img 
-                  src={`http://localhost:8000${item.image}`} 
+                  src={item.image.startsWith('/media') ? item.image : (item.image.startsWith('http') ? item.image : `http://localhost:8000${item.image}`)} 
                   alt={item.title} 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   onError={(e) => {

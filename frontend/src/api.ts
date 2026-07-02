@@ -15,14 +15,16 @@ export const getReviews = async () => {
   return res.json();
 };
 
-export const createReview = async (author: string, text: string, rating: number) => {
+export const createReview = async (author: string, text: string, rating: number, createdAt?: string) => {
+  const payload: any = { author, text, rating };
+  if (createdAt) payload.created_at = createdAt;
   const res = await fetch(`${API_URL}/reviews`, {
     method: 'POST',
     headers: {
       ...getHeaders(),
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ author, text, rating }),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error('Error creating review');
   return res.json();
