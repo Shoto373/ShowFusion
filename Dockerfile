@@ -25,6 +25,7 @@ COPY --from=frontend-builder /app/frontend/dist /app/dist
 
 # Set environment variables
 ENV PYTHONPATH=/app
+ENV DATA_DIR=/data
 
 # Expose the API port
 EXPOSE 8000

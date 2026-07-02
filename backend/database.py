@@ -3,8 +3,8 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, "showfusion.db")
+DATA_DIR = os.getenv("DATA_DIR", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DB_PATH = os.path.join(DATA_DIR, "showfusion.db")
 
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
 ASYNC_SQLALCHEMY_DATABASE_URL = f"sqlite+aiosqlite:///{DB_PATH}"
