@@ -118,7 +118,7 @@ export const logout = () => {
   localStorage.removeItem('admin_token');
 };
 
-const getHeaders = () => {
+const getHeaders = (): Record<string, string> => {
   const token = localStorage.getItem('admin_token');
   return {
     'Authorization': `Bearer ${token}`
