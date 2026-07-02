@@ -21,7 +21,7 @@ export const Header = () => {
     { name: 'Портфолио', path: '/portfolio' },
     { name: 'О нас', path: '/about' },
     { name: 'Отзывы', path: '/reviews' },
-    { name: 'Контакты', path: '/contacts' },
+    { name: 'Цены', path: '/services' },
   ];
 
   const isHome = location.pathname === '/';
@@ -76,9 +76,9 @@ export const Header = () => {
               </NavLink>
             ))}
             <div className="ml-4 lg:ml-8">
-              <a href="tel:+79966178089" className="btn-primary text-xs lg:text-sm py-2.5 px-6 inline-flex items-center gap-2 group animate-[pulse_2s_infinite] hover:animate-none">
+              <NavLink to="/contacts" className="btn-primary text-xs lg:text-sm py-2.5 px-6 inline-flex items-center gap-2 group animate-[pulse_2s_infinite] hover:animate-none">
                 <span className="relative z-10 tracking-wide uppercase font-bold">Заказать шоу</span>
-              </a>
+              </NavLink>
             </div>
           </nav>
 
@@ -118,9 +118,9 @@ export const Header = () => {
                 </NavLink>
               ))}
               <div className="pt-6 w-full px-4">
-                <a href="tel:+79966178089" className="btn-primary block text-center py-4 text-lg w-full tracking-widest">
+                <NavLink to="/contacts" onClick={() => setIsOpen(false)} className="btn-primary block text-center py-4 text-lg w-full tracking-widest">
                   ЗАКАЗАТЬ ШОУ
-                </a>
+                </NavLink>
               </div>
             </div>
           </motion.div>
