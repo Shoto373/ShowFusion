@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from fastapi.responses import FileResponse
 
 from . import models, schemas
 from .database import engine, SessionLocal
@@ -215,3 +216,18 @@ def delete_service(service_id: int, db: Session = Depends(get_db), admin: str = 
     db.delete(db_item)
     db.commit()
     return {"ok": True}
+
+# --- Serve Frontend SPA ---
+
+@app.get("/{full_path:path}")
+def serve_spa(full_path: str):
+    # This will catch all routes not handled by /api/... and serve the frontend
+    dist_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "dist")
+    
+    # If the file exists in dist (like /assets/something.js, /favicon.svg), serve it directly
+    file_path = os.path.join(dist_dir, full_path)
+    if os.path.isfile(file_path):
+        return FileResponse(file_path)
+        
+    # Otherwise, it's a client-side route, serve index.html
+    return FileResponse(os.path.join(dist_dir, "index.html"))

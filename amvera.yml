@@ -1,0 +1,7 @@
+meta:
+  environment: docker
+  toolchain:
+    name: docker
+    version: 1
+run:
+  containerPort: 8000

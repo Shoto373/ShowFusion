@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api';
+const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8000/api';
 
 export const getPortfolio = async () => {
   const res = await fetch(`${API_URL}/portfolio`);
