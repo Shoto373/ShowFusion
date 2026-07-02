@@ -78,14 +78,14 @@ export const Contacts = () => {
                   <Phone className="text-brand-neon" size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold">Телефон / WhatsApp</h3>
-                  <a href="tel:+79991234567" className="text-gray-400 hover:text-brand-gold transition-colors block">+7 (999) 123-45-67</a>
+                  <h3 className="text-lg font-semibold">Телефон / Telegram</h3>
+                  <a href="tel:+79966178089" className="text-gray-400 hover:text-brand-gold transition-colors block">+7 (996) 617-80-89</a>
                   <a 
-                    href={`https://wa.me/79991234567?text=Здравствуйте! Я хочу узнать подробнее про шоу.`} 
+                    href="https://t.me/ShowFusion_bot" 
                     target="_blank" rel="noreferrer"
-                    className="text-sm text-green-400 hover:text-green-300 transition-colors mt-1 block"
+                    className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1 block"
                   >
-                    Написать в WhatsApp
+                    Написать в Telegram
                   </a>
                 </div>
               </div>
@@ -96,7 +96,7 @@ export const Contacts = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold">Email</h3>
-                  <a href="mailto:info@showfusion.ru" className="text-gray-400 hover:text-brand-gold transition-colors block">info@showfusion.ru</a>
+                  <a href="mailto:showfusion62@gmail.com" className="text-gray-400 hover:text-brand-gold transition-colors block">showfusion62@gmail.com</a>
                 </div>
               </div>
 

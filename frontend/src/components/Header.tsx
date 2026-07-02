@@ -24,10 +24,13 @@ export const Header = () => {
     { name: 'Контакты', path: '/contacts' },
   ];
 
+  const isHome = location.pathname === '/';
+  const isScrolled = scrolled || !isHome;
+
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled 
+        isScrolled 
           ? 'bg-[#0B0F19]/80 backdrop-blur-xl border-b border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] py-2' 
           : 'bg-gradient-to-b from-black/80 to-transparent py-4 md:py-6'
       }`}
@@ -41,7 +44,7 @@ export const Header = () => {
             <img 
               src="/media/logo.png" 
               alt="ShowFusion" 
-              className={`relative object-contain transition-all duration-500 ${scrolled ? 'h-14 md:h-16' : 'h-16 md:h-24'} drop-shadow-[0_0_15px_rgba(255,107,0,0.3)] group-hover:scale-105`}
+              className={`relative object-contain transition-all duration-500 ${isScrolled ? 'h-14 md:h-16' : 'h-16 md:h-24'} drop-shadow-[0_0_15px_rgba(255,107,0,0.3)] group-hover:scale-105`}
             />
           </NavLink>
 
@@ -73,7 +76,7 @@ export const Header = () => {
               </NavLink>
             ))}
             <div className="ml-4 lg:ml-8">
-              <a href="tel:+79991234567" className="btn-primary text-xs lg:text-sm py-2.5 px-6 inline-flex items-center gap-2 group animate-[pulse_2s_infinite] hover:animate-none">
+              <a href="tel:+79966178089" className="btn-primary text-xs lg:text-sm py-2.5 px-6 inline-flex items-center gap-2 group animate-[pulse_2s_infinite] hover:animate-none">
                 <span className="relative z-10 tracking-wide uppercase font-bold">Заказать шоу</span>
               </a>
             </div>
@@ -115,7 +118,7 @@ export const Header = () => {
                 </NavLink>
               ))}
               <div className="pt-6 w-full px-4">
-                <a href="tel:+79991234567" className="btn-primary block text-center py-4 text-lg w-full tracking-widest">
+                <a href="tel:+79966178089" className="btn-primary block text-center py-4 text-lg w-full tracking-widest">
                   ЗАКАЗАТЬ ШОУ
                 </a>
               </div>

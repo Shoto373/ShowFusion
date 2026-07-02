@@ -69,7 +69,7 @@ async def process_contacts(callback: CallbackQuery):
     text = (
         "<b>Наши контакты:</b>\n\n"
         "📱 Телефон: +7 996 617 80 89\n"
-        "✉️ Email: info@showfusion.ru\n"
+        "✉️ Email: showfusion62@gmail.com\n"
         "📍 Адрес: г. Рязань\n"
         "🌐 VK: <a href='https://vk.com/originalfireshow'>originalfireshow</a>\n"
     )

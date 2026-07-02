@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Flame, Star, Sparkles, Music, Wind, Sun } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { getServices } from '../api';
 
 const IconMap: any = {
@@ -15,10 +15,23 @@ const IconMap: any = {
 
 export const Services = () => {
   const [services, setServices] = useState<any[]>([]);
+  const location = useLocation();
 
   useEffect(() => {
     getServices().then(setServices).catch(console.error);
   }, []);
+
+  useEffect(() => {
+    if (services.length > 0 && location.hash) {
+      const id = location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // Small delay to ensure rendering is complete
+      }
+    }
+  }, [services, location.hash]);
 
   return (
     <div className="py-24 bg-brand-dark min-h-screen">
