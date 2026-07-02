@@ -17,9 +17,12 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2">
-              <img src="/media/logo.png" alt="ShowFusion" className="h-10 w-auto object-contain" />
-            </Link>
+            <div className="flex items-center gap-2 mb-4">
+              <img src="/media/logo-icon.png" alt="ShowFusion Flame" className="h-8 w-auto object-contain mix-blend-screen" />
+              <span className="text-white font-black tracking-[0.15em] uppercase text-xl">
+                Show<span className="text-brand-orange">Fusion</span>
+              </span>
+            </div>
             <p className="text-gray-400 text-sm">
               Яркое шоу и спецэффекты на свадьбу, корпоратив и любой праздник в Рязани.
             </p>

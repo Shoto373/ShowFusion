@@ -38,13 +38,16 @@ export const Header = () => {
         <div className="flex justify-between items-center">
           
           {/* Logo with Glow Effect */}
-          <NavLink to="/" className="relative group flex-shrink-0">
-            <div className="absolute inset-0 bg-brand-orange/20 blur-2xl rounded-full group-hover:bg-brand-gold/40 transition-colors duration-500" />
+          <NavLink to="/" className="relative group flex items-center gap-3">
+            <div className="absolute inset-0 bg-brand-orange/10 blur-3xl rounded-full group-hover:bg-brand-gold/20 transition-colors duration-500" />
             <img 
-              src="/media/logo.png" 
-              alt="ShowFusion" 
-              className={`relative object-contain transition-all duration-500 ${isScrolled ? 'h-14 md:h-16' : 'h-16 md:h-24'} drop-shadow-[0_0_15px_rgba(255,107,0,0.3)] group-hover:scale-105`}
+              src="/media/logo-icon.png" 
+              alt="ShowFusion Flame" 
+              className={`relative object-contain transition-all duration-500 mix-blend-screen ${isScrolled ? 'h-10 md:h-12' : 'h-12 md:h-14'} drop-shadow-[0_0_15px_rgba(255,107,0,0.3)] group-hover:scale-105`}
             />
+            <span className={`relative text-white font-black tracking-[0.15em] uppercase transition-all duration-500 ${isScrolled ? 'text-lg md:text-xl' : 'text-xl md:text-2xl'}`}>
+              Show<span className="text-brand-orange">Fusion</span>
+            </span>
           </NavLink>
 
           {/* Desktop Nav */}
