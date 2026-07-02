@@ -12,6 +12,7 @@ router = Router()
 
 def get_main_menu():
     webapp_url = os.getenv("WEBAPP_URL", "https://showfusion.amvera.io")
+    webapp_url = webapp_url.replace("https://https://", "https://")
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="📱 Открыть Mini App", web_app=WebAppInfo(url=webapp_url))],
         [InlineKeyboardButton(text="🎭 Наши услуги", callback_data="menu_services")],
