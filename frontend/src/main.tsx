@@ -4,7 +4,11 @@ import './index.css'
 import App from './App.tsx'
 import WebApp from '@twa-dev/sdk'
 
-WebApp.ready()
+try {
+  WebApp.ready()
+} catch (e) {
+  console.log("Telegram WebApp is not available.");
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
