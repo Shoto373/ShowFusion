@@ -3,7 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def send_email_notification(name, phone, event_type, date, comment):
+def send_email_notification(name, phone, event_type, date, time, comment):
     smtp_server = os.getenv("SMTP_SERVER")
     smtp_port = os.getenv("SMTP_PORT", "465")
     smtp_user = os.getenv("SMTP_USER")
@@ -23,6 +23,7 @@ def send_email_notification(name, phone, event_type, date, comment):
 Телефон: {phone}
 Тип мероприятия: {event_type}
 Дата: {date}
+Время: {time if time else 'Не указано'}
 Комментарий: {comment or 'Нет'}
     """
     

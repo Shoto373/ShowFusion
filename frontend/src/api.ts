@@ -11,6 +11,14 @@ export const getSettings = async () => {
   return res.json();
 };
 
+export const getAnalytics = async () => {
+  const res = await fetch(`${API_URL}/analytics`, {
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error('Error fetching analytics');
+  return res.json();
+};
+
 export const getReviews = async () => {
   const res = await fetch(`${API_URL}/reviews`);
   return res.json();

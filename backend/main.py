@@ -12,6 +12,7 @@ from .database import engine, SessionLocal
 from .telegram import send_telegram_notification
 from .email_service import send_email_notification
 from .auth import create_access_token, get_current_admin
+from .google_calendar import create_calendar_event
 
 from . import seed_services, seed_portfolio, seed_reviews
 
@@ -76,6 +77,7 @@ def create_application(application: schemas.ApplicationCreate, background_tasks:
         phone=application.phone,
         event_type=application.event_type,
         date=application.date,
+        time=application.time,
         comment=application.comment
     )
     
@@ -85,10 +87,67 @@ def create_application(application: schemas.ApplicationCreate, background_tasks:
         phone=application.phone,
         event_type=application.event_type,
         date=application.date,
+        time=application.time,
+        comment=application.comment
+    )
+    
+    background_tasks.add_task(
+        create_calendar_event,
+        name=application.name,
+        phone=application.phone,
+        event_type=application.event_type,
+        date_str=application.date,
+        time_str=application.time,
         comment=application.comment
     )
     
     return db_app
+
+@app.get("/api/analytics")
+def get_analytics(db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
+    applications = db.query(models.Application).all()
+    
+    # Process basic stats
+    total_applications = len(applications)
+    
+    # Process by service type
+    services_count = {}
+    for app in applications:
+        evt = app.event_type or "Unknown"
+        services_count[evt] = services_count.get(evt, 0) + 1
+        
+    top_services = [{"name": k, "value": v} for k, v in services_count.items()]
+    
+    # Process by month
+    months_count = {}
+    for app in applications:
+        if app.created_at:
+            month_key = app.created_at.strftime("%Y-%m")
+            months_count[month_key] = months_count.get(month_key, 0) + 1
+            
+    # Sort months
+    sorted_months = sorted(months_count.keys())
+    applications_by_month = [{"name": m, "count": months_count[m]} for m in sorted_months]
+    
+    # Process by source (Bot vs Site)
+    source_count = {"Site": 0, "Bot": 0}
+    for app in applications:
+        if app.tg_user_id:
+            source_count["Bot"] += 1
+        else:
+            source_count["Site"] += 1
+            
+    sources = [
+        {"name": "Сайт", "value": source_count["Site"]},
+        {"name": "Telegram Бот", "value": source_count["Bot"]}
+    ]
+    
+    return {
+        "total_applications": total_applications,
+        "top_services": top_services,
+        "applications_by_month": applications_by_month[-6:], # Last 6 months
+        "sources": sources
+    }
 
 @app.get("/api/reviews", response_model=list[schemas.Review])
 def read_reviews(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):

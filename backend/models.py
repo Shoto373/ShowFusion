@@ -10,6 +10,7 @@ class Application(Base):
     phone = Column(String)
     event_type = Column(String)
     date = Column(String)
+    time = Column(String, nullable=True)
     comment = Column(Text, nullable=True)
     status = Column(String, default="Новая")
     tg_user_id = Column(Integer, nullable=True) # To store the Telegram User ID if created from bot

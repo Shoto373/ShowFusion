@@ -9,6 +9,7 @@ import asyncio
 from backend.database import AsyncSessionLocal
 from backend.models import Application, Service
 from backend.telegram import send_telegram_notification
+from backend.google_calendar import create_calendar_event
 from sqlalchemy.future import select
 
 router = Router()
@@ -18,6 +19,7 @@ class OrderForm(StatesGroup):
     name = State()
     phone = State()
     date = State()
+    time = State()
     comment = State()
 
 async def get_services_keyboard():
@@ -97,6 +99,12 @@ async def process_date(message: Message, state: FSMContext):
         return
         
     await state.update_data(date=date_str)
+    await state.set_state(OrderForm.time)
+    await message.answer("Укажите примерное время мероприятия (или напишите 'Не знаю'):")
+
+@router.message(OrderForm.time)
+async def process_time(message: Message, state: FSMContext):
+    await state.update_data(time=message.text.strip())
     await state.set_state(OrderForm.comment)
     await message.answer("Добавьте комментарий или пожелания (или напишите 'Нет'):")
 
@@ -112,6 +120,7 @@ async def process_comment(message: Message, state: FSMContext):
             phone=data['phone'],
             event_type=data['service'],
             date=data['date'],
+            time=data['time'],
             comment=data['comment'],
             status="Новая",
             tg_user_id=message.from_user.id
@@ -135,6 +144,16 @@ async def process_comment(message: Message, state: FSMContext):
         phone=data['phone'],
         event_type=data['service'],
         date=data['date'],
+        time=data['time'],
         comment=data['comment'],
         source="Telegram-бот"
+    ))
+    
+    loop.run_in_executor(None, lambda: create_calendar_event(
+        name=data['name'],
+        phone=data['phone'],
+        event_type=data['service'],
+        date_str=data['date'],
+        time_str=data['time'],
+        comment=data['comment']
     ))

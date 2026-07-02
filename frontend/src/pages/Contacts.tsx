@@ -9,6 +9,7 @@ export const Contacts = () => {
     phone: '',
     event_type: 'Свадьба',
     date: '',
+    time: '',
     comment: ''
   });
   
@@ -30,7 +31,7 @@ export const Contacts = () => {
       if (!response.ok) throw new Error('Network response was not ok');
       
       setStatus('success');
-      setFormData({ name: '', phone: '', event_type: 'Свадьба', date: '', comment: '' });
+      setFormData({ name: '', phone: '', event_type: 'Свадьба', date: '', time: '', comment: '' });
     } catch (error) {
       console.error('Error submitting form:', error);
       setStatus('error');
@@ -161,7 +162,7 @@ export const Contacts = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   <div>
                     <label className="block text-sm font-medium text-gray-400 mb-1">Тип мероприятия</label>
                     <select 
@@ -185,6 +186,17 @@ export const Contacts = () => {
                       type="date" 
                       name="date"
                       value={formData.date}
+                      onChange={handleChange}
+                      className="w-full bg-brand-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Время мероприятия</label>
+                    <input 
+                      type="time" 
+                      name="time"
+                      value={formData.time}
                       onChange={handleChange}
                       className="w-full bg-brand-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon transition-all"
                     />

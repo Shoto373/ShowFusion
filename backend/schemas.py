@@ -7,6 +7,7 @@ class ApplicationCreate(BaseModel):
     phone: str
     event_type: str
     date: str
+    time: Optional[str] = None
     comment: Optional[str] = None
 
 class Application(ApplicationCreate):

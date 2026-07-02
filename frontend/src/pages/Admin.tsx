@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL, getPortfolio, createPortfolioItem, deletePortfolioItem, logout, getReviews, createReview, deleteReview, getServices, createService, updateService, deleteService } from '../api';
+import { BASE_URL, getPortfolio, createPortfolioItem, deletePortfolioItem, logout, getReviews, createReview, deleteReview, getServices, createService, updateService, deleteService, getAnalytics } from '../api';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 
 export const Admin = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'portfolio' | 'reviews' | 'services'>('portfolio');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'portfolio' | 'reviews' | 'services'>('analytics');
+  const [analyticsData, setAnalyticsData] = useState<any>(null);
 
   // Portfolio state
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
@@ -44,6 +46,8 @@ export const Admin = () => {
       setReviews(revs);
       const srvs = await getServices();
       setServices(srvs);
+      const analytics = await getAnalytics();
+      setAnalyticsData(analytics);
     } catch (e) {
       navigate('/login');
     }
@@ -141,26 +145,102 @@ export const Admin = () => {
           <button onClick={handleLogout} className="text-red-500 hover:text-red-400">Выйти</button>
         </div>
 
-        <div className="flex gap-4 mb-8">
+        <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
+          <button 
+            onClick={() => setActiveTab('analytics')}
+            className={`px-6 py-2 rounded-lg font-medium transition shrink-0 ${activeTab === 'analytics' ? 'bg-brand-neon text-brand-dark' : 'bg-gray-800'}`}
+          >
+            Аналитика
+          </button>
           <button 
             onClick={() => setActiveTab('portfolio')}
-            className={`px-6 py-2 rounded-lg font-medium transition ${activeTab === 'portfolio' ? 'bg-brand-neon text-brand-dark' : 'bg-gray-800'}`}
+            className={`px-6 py-2 rounded-lg font-medium transition shrink-0 ${activeTab === 'portfolio' ? 'bg-brand-neon text-brand-dark' : 'bg-gray-800'}`}
           >
             Портфолио
           </button>
           <button 
             onClick={() => setActiveTab('reviews')}
-            className={`px-6 py-2 rounded-lg font-medium transition ${activeTab === 'reviews' ? 'bg-brand-neon text-brand-dark' : 'bg-gray-800'}`}
+            className={`px-6 py-2 rounded-lg font-medium transition shrink-0 ${activeTab === 'reviews' ? 'bg-brand-neon text-brand-dark' : 'bg-gray-800'}`}
           >
             Отзывы
           </button>
           <button 
             onClick={() => setActiveTab('services')}
-            className={`px-6 py-2 rounded-lg font-medium transition ${activeTab === 'services' ? 'bg-brand-neon text-brand-dark' : 'bg-gray-800'}`}
+            className={`px-6 py-2 rounded-lg font-medium transition shrink-0 ${activeTab === 'services' ? 'bg-brand-neon text-brand-dark' : 'bg-gray-800'}`}
           >
             Услуги
           </button>
         </div>
+
+        {activeTab === 'analytics' && analyticsData && (
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-brand-dark-card p-6 rounded-xl border border-gray-700 flex flex-col items-center justify-center">
+                <h3 className="text-gray-400 text-lg mb-2">Всего заявок</h3>
+                <span className="text-4xl font-bold text-brand-neon">{analyticsData.total_applications}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-brand-dark-card p-6 rounded-xl border border-gray-700">
+                <h3 className="text-xl font-bold mb-6">Динамика заявок (за 6 мес)</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={analyticsData.applications_by_month}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis dataKey="name" stroke="#9ca3af" />
+                      <YAxis stroke="#9ca3af" allowDecimals={false} />
+                      <RechartsTooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151' }} />
+                      <Line type="monotone" dataKey="count" name="Заявки" stroke="#f26e22" strokeWidth={3} dot={{ r: 6 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="bg-brand-dark-card p-6 rounded-xl border border-gray-700">
+                <h3 className="text-xl font-bold mb-6">Популярность услуг</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={analyticsData.top_services}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis dataKey="name" stroke="#9ca3af" />
+                      <YAxis stroke="#9ca3af" allowDecimals={false} />
+                      <RechartsTooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151' }} />
+                      <Bar dataKey="value" name="Заказов" fill="#ffb429" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="bg-brand-dark-card p-6 rounded-xl border border-gray-700">
+                <h3 className="text-xl font-bold mb-6">Источники заявок</h3>
+                <div className="h-64 flex justify-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={analyticsData.sources}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                        label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        labelLine={false}
+                      >
+                        {analyticsData.sources.map((entry: any, index: number) => (
+                          <Cell key={`cell-${index}`} fill={index === 0 ? '#ffb429' : '#f26e22'} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151' }} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {activeTab === 'services' && (
           <div>
