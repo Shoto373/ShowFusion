@@ -9,6 +9,7 @@ class ApplicationCreate(BaseModel):
     date: str
     time: Optional[str] = None
     comment: Optional[str] = None
+    tg_user_id: Optional[int] = None
 
 class Application(ApplicationCreate):
     id: int

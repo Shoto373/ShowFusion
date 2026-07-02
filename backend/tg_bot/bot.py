@@ -5,11 +5,13 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # Add parent directory to path so we can import from backend
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from backend.tg_bot.handlers import user, order, admin
+from backend.tg_bot.jobs import check_and_send_nps
 
 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
 load_dotenv(dotenv_path)
@@ -28,6 +30,11 @@ async def main():
     dp.include_router(admin.router)
     dp.include_router(order.router)
     dp.include_router(user.router)
+    
+    # Setup scheduler
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(check_and_send_nps, 'cron', hour=12, minute=0, args=[bot])
+    scheduler.start()
     
     print("Telegram Bot is starting...")
     await dp.start_polling(bot)

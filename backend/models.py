@@ -14,6 +14,7 @@ class Application(Base):
     comment = Column(Text, nullable=True)
     status = Column(String, default="Новая")
     tg_user_id = Column(Integer, nullable=True) # To store the Telegram User ID if created from bot
+    nps_sent = Column(Integer, default=0) # 0 for False, 1 for True since SQLite doesn't have native BOOLEAN
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 class Review(Base):

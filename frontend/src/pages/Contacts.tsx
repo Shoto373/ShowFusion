@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import WebApp from '@twa-dev/sdk';
 import { API_URL } from '../api';
 
 export const Contacts = () => {
@@ -10,8 +11,19 @@ export const Contacts = () => {
     event_type: 'Свадьба',
     date: '',
     time: '',
-    comment: ''
+    comment: '',
+    tg_user_id: undefined as number | undefined
   });
+  
+  useEffect(() => {
+    if (WebApp.initDataUnsafe?.user) {
+      setFormData(prev => ({
+        ...prev,
+        name: WebApp.initDataUnsafe.user?.first_name || '',
+        tg_user_id: WebApp.initDataUnsafe.user?.id
+      }));
+    }
+  }, []);
   
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
@@ -31,7 +43,14 @@ export const Contacts = () => {
       if (!response.ok) throw new Error('Network response was not ok');
       
       setStatus('success');
-      setFormData({ name: '', phone: '', event_type: 'Свадьба', date: '', time: '', comment: '' });
+      setFormData({ name: '', phone: '', event_type: 'Свадьба', date: '', time: '', comment: '', tg_user_id: formData.tg_user_id });
+      
+      // Close WebApp if running inside Telegram
+      if (WebApp.initDataUnsafe?.user) {
+        setTimeout(() => {
+          WebApp.close();
+        }, 2000);
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
       setStatus('error');

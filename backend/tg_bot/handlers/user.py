@@ -1,15 +1,23 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.filters import CommandStart
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
+import os
+
+class NPSFeedback(StatesGroup):
+    waiting_for_feedback = State()
 
 router = Router()
 
 def get_main_menu():
+    webapp_url = os.getenv("WEBAPP_URL", "https://showfusion.amvera.io")
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="📱 Открыть Mini App", web_app=WebAppInfo(url=webapp_url))],
         [InlineKeyboardButton(text="🎭 Наши услуги", callback_data="menu_services")],
         [InlineKeyboardButton(text="❓ Частые вопросы", callback_data="menu_faq")],
         [InlineKeyboardButton(text="📞 Контакты", callback_data="menu_contacts")],
-        [InlineKeyboardButton(text="🛒 Оформить заказ", callback_data="order_start")]
+        [InlineKeyboardButton(text="🛒 Оформить заказ (в чате)", callback_data="order_start")]
     ])
     return keyboard
 
@@ -78,3 +86,33 @@ async def process_contacts(callback: CallbackQuery):
     ])
     await callback.message.edit_text(text, reply_markup=kb, disable_web_page_preview=True)
     await callback.answer()
+
+@router.callback_query(F.data.startswith("nps_"))
+async def process_nps(callback: CallbackQuery, state: FSMContext):
+    rating = int(callback.data.split("_")[1])
+    if rating == 5:
+        text = "Спасибо за высшую оценку! 🎉\nБудем рады, если вы оставите отзыв на Яндекс.Картах: https://yandex.ru/maps/"
+        await callback.message.edit_text(text)
+    else:
+        await state.update_data(rating=rating)
+        await state.set_state(NPSFeedback.waiting_for_feedback)
+        await callback.message.edit_text("Спасибо за честную оценку! Пожалуйста, напишите текстом, что мы могли бы улучшить:")
+    await callback.answer()
+
+@router.message(NPSFeedback.waiting_for_feedback)
+async def process_nps_text(message: Message, state: FSMContext):
+    data = await state.get_data()
+    rating = data.get('rating')
+    
+    admin_id = os.getenv("ADMIN_TG_ID")
+    if admin_id:
+        admin_ids = [int(i.strip()) for i in admin_id.split(",") if i.strip().isdigit()]
+        text = f"📉 <b>Новый отзыв NPS!</b>\n\nОценка: {rating}/5\nОт пользователя: @{message.from_user.username or message.from_user.id}\nТекст: {message.text}"
+        for aid in admin_ids:
+            try:
+                await message.bot.send_message(aid, text, parse_mode="HTML")
+            except Exception:
+                pass
+
+    await message.answer("Спасибо за ваш отзыв! Мы обязательно станем лучше.")
+    await state.clear()

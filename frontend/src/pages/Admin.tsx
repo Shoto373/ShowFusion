@@ -225,10 +225,10 @@ export const Admin = () => {
                         outerRadius={80}
                         paddingAngle={5}
                         dataKey="value"
-                        label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({name, percent}) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                         labelLine={false}
                       >
-                        {analyticsData.sources.map((entry: any, index: number) => (
+                        {analyticsData.sources.map((_entry: any, index: number) => (
                           <Cell key={`cell-${index}`} fill={index === 0 ? '#ffb429' : '#f26e22'} />
                         ))}
                       </Pie>
