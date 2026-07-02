@@ -9,7 +9,10 @@ def seed():
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     media_dir = os.path.join(base_dir, "frontend", "public", "media")
-    uploads_dir = os.path.join(base_dir, "backend", "uploads")
+    if not os.path.exists(media_dir):
+        media_dir = os.path.join(base_dir, "dist", "media")
+    data_dir = os.getenv("DATA_DIR", os.path.join(base_dir, "backend"))
+    uploads_dir = os.path.join(data_dir, "uploads")
     os.makedirs(uploads_dir, exist_ok=True)
 
     items_to_seed = [

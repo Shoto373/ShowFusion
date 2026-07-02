@@ -12,7 +12,17 @@ from .database import engine, SessionLocal
 from .telegram import send_telegram_notification
 from .auth import create_access_token, get_current_admin
 
+from . import seed_services, seed_portfolio, seed_reviews
+
 models.Base.metadata.create_all(bind=engine)
+
+# Auto-seed the database if empty
+try:
+    seed_services.seed()
+    seed_portfolio.seed()
+    seed_reviews.seed()
+except Exception as e:
+    print(f"Error seeding database: {e}")
 
 app = FastAPI(title="ShowFusion API")
 
