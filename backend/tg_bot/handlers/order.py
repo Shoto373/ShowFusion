@@ -7,8 +7,9 @@ import asyncio
 
 # Need absolute imports because bot runs from bot.py
 from backend.database import AsyncSessionLocal
-from backend.models import Application
+from backend.models import Application, Service
 from backend.telegram import send_telegram_notification
+from sqlalchemy.future import select
 
 router = Router()
 
@@ -19,15 +20,15 @@ class OrderForm(StatesGroup):
     date = State()
     comment = State()
 
-def get_services_keyboard():
-    services = [
-        "Файер-шоу", "Тяжелый дым", "Холодные фонтаны", 
-        "Эффект Золушки", "Световое оформление", 
-        "Дымные пузыри", "Работа DJ"
-    ]
+async def get_services_keyboard():
     keyboard = []
-    for s in services:
-        keyboard.append([InlineKeyboardButton(text=s, callback_data=f"sel_service:{s}")])
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(select(Service))
+        services = result.scalars().all()
+        for s in services:
+            # Use service ID to avoid 64-byte limit in callback_data
+            keyboard.append([InlineKeyboardButton(text=s.title, callback_data=f"sel_service:{s.id}")])
+            
     keyboard.append([InlineKeyboardButton(text="Отмена", callback_data="cancel_order")])
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
@@ -36,7 +37,7 @@ async def process_order_start(callback: CallbackQuery, state: FSMContext):
     await state.set_state(OrderForm.service)
     await callback.message.edit_text(
         "Выберите услугу, которую хотите заказать:",
-        reply_markup=get_services_keyboard()
+        reply_markup=await get_services_keyboard()
     )
     await callback.answer()
 
@@ -52,10 +53,14 @@ async def cancel_order(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(OrderForm.service, F.data.startswith("sel_service:"))
 async def process_service_selection(callback: CallbackQuery, state: FSMContext):
-    service = callback.data.split(":")[1]
-    await state.update_data(service=service)
+    service_id = int(callback.data.split(":")[1])
+    async with AsyncSessionLocal() as db:
+        service_obj = await db.get(Service, service_id)
+        service_title = service_obj.title if service_obj else "Неизвестная услуга"
+    
+    await state.update_data(service=service_title)
     await state.set_state(OrderForm.name)
-    await callback.message.edit_text(f"Вы выбрали: <b>{service}</b>\n\nКак к вам обращаться?")
+    await callback.message.edit_text(f"Вы выбрали: <b>{service_title}</b>\n\nКак к вам обращаться?")
     await callback.answer()
 
 import re

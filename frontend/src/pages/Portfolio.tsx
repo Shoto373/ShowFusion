@@ -9,7 +9,8 @@ const filters = [
   { id: 'light', label: 'Свет' },
   { id: 'fountain', label: 'Фонтаны' },
   { id: 'cinderella', label: 'Золушка' },
-  { id: 'bubbles', label: 'Пузыри' }
+  { id: 'bubbles', label: 'Пузыри' },
+  { id: 'dj', label: 'DJ' }
 ];
 
 export const Portfolio = () => {

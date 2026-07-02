@@ -1,66 +1,26 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Flame, Star, Sparkles, Music } from 'lucide-react';
+import { Flame, Star, Sparkles, Music, Wind, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getSettings } from '../api';
+import { getServices } from '../api';
 
-const services = [
-  {
-    id: 'fire',
-    title: 'Огненное шоу',
-    description: 'Для выступления на улице. Профессиональные артисты и яркая пиротехника.',
-    image: '/media/full_O2jJTAYn.png',
-    icon: <Flame size={24} className="text-brand-orange" />
-  },
-  {
-    id: 'smoke',
-    title: 'Тяжелый дым',
-    description: 'На первый танец молодых. Создает эффект танца в облаках.',
-    image: '/media/full_MXP6QYSs.jpg',
-    icon: <Star size={24} className="text-brand-neon" />
-  },
-  {
-    id: 'fountain',
-    title: 'Холодные фонтаны',
-    description: 'Мельницы, дорожки, вертушки для ярких фотографий.',
-    image: '/media/full_R72Wc6YZ.jpg',
-    icon: <Sparkles size={24} className="text-brand-gold" />
-  },
-  {
-    id: 'cinderella',
-    title: 'Эффект Золушки',
-    description: 'Волшебная сказка в нашем городе. Лазерное шоу.',
-    image: '/media/fFSTtfHP.jpg',
-    icon: <Music size={24} className="text-pink-400" />
-  },
-  {
-    id: 'bubbles',
-    title: 'Дымные пузыри',
-    description: 'Новинка сезона! Завораживающее шоу для детей и взрослых.',
-    image: '/media/full_p4XausNN.jpg',
-    icon: <Sparkles size={24} className="text-purple-400" />
-  },
-  {
-    id: 'light',
-    title: 'Световое оформление',
-    description: 'И свадебный свет для площадок.',
-    image: '/media/full_zc7W9Eki.jpg',
-    icon: <Star size={24} className="text-brand-neon" />
-  }
-];
+const IconMap: any = {
+  Flame: <Flame size={24} className="text-brand-orange" />,
+  Wind: <Wind size={24} className="text-brand-neon" />,
+  Star: <Star size={24} className="text-brand-gold" />,
+  Music: <Music size={24} className="text-pink-400" />,
+  Sun: <Sun size={24} className="text-yellow-400" />,
+  Sparkles: <Sparkles size={24} className="text-purple-400" />,
+};
 
 export const Home = () => {
-  const [heroTitle, setHeroTitle] = useState('Сделайте ваш праздник незабываемым');
-  const [heroDesc, setHeroDesc] = useState('Профессиональное файер-шоу, тяжелый дым и спецэффекты для свадеб, корпоративов и вечеринок в Рязани.');
+  const heroTitle = 'Сделайте ваш праздник незабываемым';
+  const heroDesc = 'Профессиональное файер-шоу, тяжелый дым и спецэффекты для свадеб, корпоративов и вечеринок в Рязани.';
+  
+  const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
-    getSettings().then(data => {
-      const hTitle = data.find((s: any) => s.key === 'hero_title');
-      const hDesc = data.find((s: any) => s.key === 'hero_desc');
-      if (hTitle && hTitle.value) setHeroTitle(hTitle.value);
-      if (hDesc && hDesc.value) setHeroDesc(hDesc.value);
-    }).catch(console.error);
+    getServices().then(setServices).catch(console.error);
   }, []);
 
   return (
@@ -127,7 +87,7 @@ export const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <motion.div
-                key={service.id}
+                key={service.key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -138,7 +98,7 @@ export const Home = () => {
                   <div className="h-56 bg-gray-800 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark-card via-brand-dark-card/50 to-transparent z-10" />
                     <img 
-                      src={service.image} 
+                      src={service.image.startsWith('/media') ? service.image : `http://localhost:8000${service.image}`} 
                       alt={service.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => {
@@ -146,7 +106,7 @@ export const Home = () => {
                       }}
                     />
                     <div className="absolute top-4 right-4 z-20 bg-brand-dark/80 p-2 rounded-full backdrop-blur-sm">
-                      {service.icon}
+                      {IconMap[service.icon_name] || <Star size={24} className="text-brand-gold" />}
                     </div>
                   </div>
                   <div className="p-6 relative z-20 -mt-6">

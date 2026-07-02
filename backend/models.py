@@ -39,3 +39,16 @@ class SiteSetting(Base):
     key = Column(String, primary_key=True, index=True)
     value = Column(Text)
     description = Column(String, nullable=True)
+
+class Service(Base):
+    __tablename__ = "services"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String, unique=True, index=True) # e.g. 'fire', 'smoke'
+    title = Column(String)
+    description = Column(Text)
+    features = Column(Text) # Comma-separated string or JSON string
+    image = Column(String)
+    icon_name = Column(String) # e.g. 'Flame', 'Star'
+    price = Column(String)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

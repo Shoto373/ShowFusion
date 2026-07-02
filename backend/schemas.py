@@ -54,3 +54,19 @@ class SiteSetting(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class ServiceCreate(BaseModel):
+    key: str
+    title: str
+    description: str
+    features: str
+    image: str
+    icon_name: str
+    price: str
+
+class Service(ServiceCreate):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

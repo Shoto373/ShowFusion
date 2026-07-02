@@ -10,6 +10,92 @@ export const getSettings = async () => {
   return res.json();
 };
 
+export const getReviews = async () => {
+  const res = await fetch(`${API_URL}/reviews`);
+  return res.json();
+};
+
+export const createReview = async (author: string, text: string, rating: number) => {
+  const res = await fetch(`${API_URL}/reviews`, {
+    method: 'POST',
+    headers: {
+      ...getHeaders(),
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ author, text, rating }),
+  });
+  if (!res.ok) throw new Error('Error creating review');
+  return res.json();
+};
+
+export const deleteReview = async (id: number) => {
+  const res = await fetch(`${API_URL}/reviews/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error('Error deleting review');
+  return res.json();
+};
+
+export const getServices = async () => {
+  const res = await fetch(`${API_URL}/services`);
+  return res.json();
+};
+
+export const createService = async (key: string, title: string, description: string, features: string, icon_name: string, price: string, image: File | null, imageUrl: string | null) => {
+  const formData = new FormData();
+  formData.append('key', key);
+  formData.append('title', title);
+  formData.append('description', description);
+  formData.append('features', features);
+  formData.append('icon_name', icon_name);
+  formData.append('price', price);
+  if (image) formData.append('image', image);
+  if (imageUrl) formData.append('image_url', imageUrl);
+  
+  const headers = getHeaders();
+  delete headers['Content-Type']; // Let browser set boundary
+
+  const res = await fetch(`${API_URL}/services`, {
+    method: 'POST',
+    headers,
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Error creating service');
+  return res.json();
+};
+
+export const updateService = async (id: number, key: string, title: string, description: string, features: string, icon_name: string, price: string, image: File | null) => {
+  const formData = new FormData();
+  formData.append('key', key);
+  formData.append('title', title);
+  formData.append('description', description);
+  formData.append('features', features);
+  formData.append('icon_name', icon_name);
+  formData.append('price', price);
+  if (image) formData.append('image', image);
+
+  const headers = getHeaders();
+  delete headers['Content-Type']; // Let browser set boundary
+
+  const res = await fetch(`${API_URL}/services/${id}`, {
+    method: 'PUT',
+    headers,
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Error updating service');
+  return res.json();
+};
+
+export const deleteService = async (id: number) => {
+  const res = await fetch(`${API_URL}/services/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error('Error deleting service');
+  return res.json();
+};
+
 export const login = async (username: string, password: string) => {
   const formData = new FormData();
   formData.append('username', username);

@@ -9,10 +9,7 @@ export const Footer = () => {
           
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2">
-              <Flame className="text-brand-orange" size={28} />
-              <span className="text-xl font-bold tracking-wider">
-                SHOW<span className="text-brand-neon">FUSION</span>
-              </span>
+              <img src="/media/logo.png" alt="ShowFusion" className="h-10 w-auto object-contain" />
             </Link>
             <p className="text-gray-400 text-sm">
               Яркое шоу и спецэффекты на свадьбу, корпоратив и любой праздник в Рязани.
@@ -22,11 +19,11 @@ export const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4 text-white">Услуги</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link to="/services" className="hover:text-brand-gold transition-colors">Файер-шоу</Link></li>
-              <li><Link to="/services" className="hover:text-brand-gold transition-colors">Тяжелый дым</Link></li>
-              <li><Link to="/services" className="hover:text-brand-gold transition-colors">Холодные фонтаны</Link></li>
-              <li><Link to="/services" className="hover:text-brand-gold transition-colors">Эффект золушки</Link></li>
-              <li><Link to="/services" className="hover:text-brand-gold transition-colors">Световое оформление</Link></li>
+              <li><Link to="/services#fire" className="hover:text-brand-gold transition-colors">Файер-шоу</Link></li>
+              <li><Link to="/services#smoke" className="hover:text-brand-gold transition-colors">Тяжелый дым</Link></li>
+              <li><Link to="/services#fountain" className="hover:text-brand-gold transition-colors">Холодные фонтаны</Link></li>
+              <li><Link to="/services#cinderella" className="hover:text-brand-gold transition-colors">Эффект золушки</Link></li>
+              <li><Link to="/services#light" className="hover:text-brand-gold transition-colors">Световое оформление</Link></li>
             </ul>
           </div>
 

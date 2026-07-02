@@ -20,10 +20,7 @@ export const Header = () => {
           
           {/* Logo */}
           <NavLink to="/" className="flex items-center gap-2 group">
-            <Flame className="text-brand-orange group-hover:text-brand-gold transition-colors" size={32} />
-            <span className="text-2xl font-bold tracking-wider">
-              SHOW<span className="text-brand-neon">FUSION</span>
-            </span>
+            <img src="/media/logo.png" alt="ShowFusion" className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
           </NavLink>
 
           {/* Desktop Nav */}
