@@ -21,7 +21,6 @@ export const Header = () => {
     { name: 'Портфолио', path: '/portfolio' },
     { name: 'О нас', path: '/about' },
     { name: 'Отзывы', path: '/reviews' },
-    { name: 'Цены', path: '/services' },
   ];
 
   const isHome = location.pathname === '/';
