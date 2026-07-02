@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Flame, Star, Sparkles, Music, Wind, Sun } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { getServices } from '../api';
+import { getServices, BASE_URL } from '../api';
 
 const IconMap: any = {
   Flame: <Flame size={32} className="text-brand-orange" />,
@@ -66,7 +66,7 @@ export const Services = () => {
                 <div className="relative rounded-2xl overflow-hidden group">
                   <div className="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors z-10" />
                   <img 
-                    src={service.image.startsWith('/media') ? service.image : `http://localhost:8000${service.image}`} 
+                    src={service.image.startsWith('/media') ? service.image : `${BASE_URL}${service.image}`} 
                     alt={service.title} 
                     className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700"
                     onError={(e) => {

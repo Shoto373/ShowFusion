@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPortfolio, createPortfolioItem, deletePortfolioItem, logout, getReviews, createReview, deleteReview, getServices, createService, updateService, deleteService } from '../api';
+import { BASE_URL, getPortfolio, createPortfolioItem, deletePortfolioItem, logout, getReviews, createReview, deleteReview, getServices, createService, updateService, deleteService } from '../api';
 
 export const Admin = () => {
   const navigate = useNavigate();
@@ -220,7 +220,7 @@ export const Admin = () => {
             <div className="grid grid-cols-1 gap-6">
               {services.map(service => (
                 <div key={service.id} className="bg-brand-dark-card p-6 rounded-xl border border-gray-700 flex flex-col md:flex-row gap-6">
-                  <img src={service.image.startsWith('/media') ? service.image : `http://localhost:8000${service.image}`} alt={service.title} className="w-full md:w-48 h-32 object-cover rounded-lg" />
+                  <img src={service.image.startsWith('/media') ? service.image : `${BASE_URL}${service.image}`} alt={service.title} className="w-full md:w-48 h-32 object-cover rounded-lg" />
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <h3 className="font-bold text-xl">{service.title} <span className="text-sm text-gray-500">({service.key})</span></h3>
@@ -267,7 +267,7 @@ export const Admin = () => {
               {portfolioItems.map(item => (
                 <div key={item.id} className="bg-brand-dark-card rounded-xl overflow-hidden border border-gray-700">
                   <img 
-                    src={item.image.startsWith('/media') ? item.image : (item.image.startsWith('http') ? item.image : `http://localhost:8000${item.image}`)} 
+                    src={item.image.startsWith('/media') ? item.image : (item.image.startsWith('http') ? item.image : `${BASE_URL}${item.image}`)} 
                     alt={item.title} 
                     className="w-full h-48 object-cover" 
                     onError={(e) => {

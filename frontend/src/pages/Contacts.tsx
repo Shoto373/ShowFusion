@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { API_URL } from '../api';
 
 export const Contacts = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +19,7 @@ export const Contacts = () => {
     setStatus('loading');
     
     try {
-      const response = await fetch('http://localhost:8000/api/applications', {
+      const response = await fetch(`${API_URL}/applications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

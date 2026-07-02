@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Flame, Star, Sparkles, Music, Wind, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getServices } from '../api';
+import { getServices, BASE_URL } from '../api';
 
 const IconMap: any = {
   Flame: <Flame size={24} className="text-brand-orange" />,
@@ -99,7 +99,7 @@ export const Home = () => {
                   <div className="h-56 bg-gray-800 relative overflow-hidden flex-shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark-card via-brand-dark-card/50 to-transparent z-10" />
                     <img 
-                      src={service.image.startsWith('/media') ? service.image : `http://localhost:8000${service.image}`} 
+                      src={service.image.startsWith('/media') ? service.image : `${BASE_URL}${service.image}`} 
                       alt={service.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => {
