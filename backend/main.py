@@ -1,6 +1,6 @@
 import os
 import shutil
-from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form, status
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form, status, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordRequestForm
@@ -10,6 +10,7 @@ from fastapi.responses import FileResponse
 from . import models, schemas
 from .database import engine, SessionLocal
 from .telegram import send_telegram_notification
+from .email_service import send_email_notification
 from .auth import create_access_token, get_current_admin
 
 from . import seed_services, seed_portfolio, seed_reviews
@@ -62,14 +63,24 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/api/applications", response_model=schemas.Application)
-def create_application(application: schemas.ApplicationCreate, db: Session = Depends(get_db)):
+def create_application(application: schemas.ApplicationCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     db_app = models.Application(**application.model_dump())
     db.add(db_app)
     db.commit()
     db.refresh(db_app)
     
-    # Send telegram notification
-    send_telegram_notification(
+    # Send notifications in background
+    background_tasks.add_task(
+        send_telegram_notification,
+        name=application.name,
+        phone=application.phone,
+        event_type=application.event_type,
+        date=application.date,
+        comment=application.comment
+    )
+    
+    background_tasks.add_task(
+        send_email_notification,
         name=application.name,
         phone=application.phone,
         event_type=application.event_type,
