@@ -8,14 +8,32 @@ from sqlalchemy.orm import Session
 from fastapi.responses import FileResponse
 
 from . import models, schemas
-from .database import engine, SessionLocal
+from .database import engine, SessionLocal, DB_PATH
 from .telegram import send_telegram_notification
 from .email_service import send_email_notification
 from .auth import create_access_token, get_current_admin
 from .google_calendar import create_calendar_event
+import sqlite3
+import os
 
 from . import seed_services, seed_portfolio, seed_reviews
 
+def upgrade_db():
+    if os.path.exists(DB_PATH):
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        try:
+            cursor.execute("ALTER TABLE applications ADD COLUMN tg_user_id INTEGER")
+        except sqlite3.OperationalError:
+            pass
+        try:
+            cursor.execute("ALTER TABLE applications ADD COLUMN nps_sent INTEGER DEFAULT 0")
+        except sqlite3.OperationalError:
+            pass
+        conn.commit()
+        conn.close()
+
+upgrade_db()
 models.Base.metadata.create_all(bind=engine)
 
 # Auto-seed the database if empty
