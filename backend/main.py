@@ -23,6 +23,14 @@ def upgrade_db():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         try:
+            cursor.execute("ALTER TABLE applications ADD COLUMN time VARCHAR")
+        except sqlite3.OperationalError:
+            pass
+        try:
+            cursor.execute("ALTER TABLE applications ADD COLUMN comment TEXT")
+        except sqlite3.OperationalError:
+            pass
+        try:
             cursor.execute("ALTER TABLE applications ADD COLUMN tg_user_id INTEGER")
         except sqlite3.OperationalError:
             pass
