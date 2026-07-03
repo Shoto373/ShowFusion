@@ -10,10 +10,14 @@ export const Contacts = () => {
     phone: '',
     event_type: 'Свадьба',
     date: '',
-    time: '',
+    time_start: '',
+    time_end: '',
     comment: '',
     tg_user_id: undefined as number | undefined
   });
+
+  const longEvents = ['Свадьба', 'Корпоратив', 'День рождения', 'Клубная вечеринка', 'Городской праздник', 'Услуга DJ'];
+  const isLongEvent = longEvents.includes(formData.event_type);
   
   useEffect(() => {
     if (WebApp.initDataUnsafe?.user) {
@@ -32,18 +36,35 @@ export const Contacts = () => {
     setStatus('loading');
     
     try {
+      let finalTime = formData.time_start;
+      if (isLongEvent && formData.time_start && formData.time_end) {
+        finalTime = `с ${formData.time_start} до ${formData.time_end}`;
+      } else if (!formData.time_start) {
+        finalTime = '';
+      }
+
+      const payload = {
+        name: formData.name,
+        phone: formData.phone,
+        event_type: formData.event_type,
+        date: formData.date,
+        time: finalTime,
+        comment: formData.comment,
+        tg_user_id: formData.tg_user_id
+      };
+
       const response = await fetch(`${API_URL}/applications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) throw new Error('Network response was not ok');
       
       setStatus('success');
-      setFormData({ name: '', phone: '', event_type: 'Свадьба', date: '', time: '', comment: '', tg_user_id: formData.tg_user_id });
+      setFormData({ name: '', phone: '', event_type: 'Свадьба', date: '', time_start: '', time_end: '', comment: '', tg_user_id: formData.tg_user_id });
       
       // Close WebApp if running inside Telegram
       if (WebApp.initDataUnsafe?.user) {
@@ -190,12 +211,21 @@ export const Contacts = () => {
                       onChange={handleChange}
                       className="w-full bg-brand-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon transition-all"
                     >
-                      <option value="Свадьба">Свадьба</option>
-                      <option value="Корпоратив">Корпоратив</option>
-                      <option value="День рождения">День рождения</option>
-                      <option value="Клубная вечеринка">Клубная вечеринка</option>
-                      <option value="Городской праздник">Городской праздник</option>
-                      <option value="Другое">Другое</option>
+                      <optgroup label="Мероприятия (от и до)">
+                        <option value="Свадьба">Свадьба</option>
+                        <option value="Корпоратив">Корпоратив</option>
+                        <option value="День рождения">День рождения</option>
+                        <option value="Клубная вечеринка">Клубная вечеринка</option>
+                        <option value="Городской праздник">Городской праздник</option>
+                        <option value="Услуга DJ">Услуга DJ</option>
+                      </optgroup>
+                      <optgroup label="Одиночные шоу (время начала)">
+                        <option value="Фаер-шоу">Фаер-шоу</option>
+                        <option value="Тяжелый дым">Тяжелый дым</option>
+                        <option value="Холодные фонтаны">Холодные фонтаны</option>
+                        <option value="Лазерное шоу">Лазерное шоу</option>
+                        <option value="Другое">Другое</option>
+                      </optgroup>
                     </select>
                   </div>
                   
@@ -210,15 +240,31 @@ export const Contacts = () => {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Время мероприятия</label>
-                    <input 
-                      type="time" 
-                      name="time"
-                      value={formData.time}
-                      onChange={handleChange}
-                      className="w-full bg-brand-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon transition-all"
-                    />
+                  <div className={isLongEvent ? "col-span-1 md:col-span-3 grid grid-cols-2 gap-5" : ""}>
+                    <div className={isLongEvent ? "" : "col-span-1"}>
+                      <label className="block text-sm font-medium text-gray-400 mb-1">
+                        {isLongEvent ? "Время начала" : "Время проведения"}
+                      </label>
+                      <input 
+                        type="time" 
+                        name="time_start"
+                        value={formData.time_start}
+                        onChange={handleChange}
+                        className="w-full bg-brand-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon transition-all"
+                      />
+                    </div>
+                    {isLongEvent && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">Время окончания</label>
+                        <input 
+                          type="time" 
+                          name="time_end"
+                          value={formData.time_end}
+                          onChange={handleChange}
+                          className="w-full bg-brand-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon transition-all"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
